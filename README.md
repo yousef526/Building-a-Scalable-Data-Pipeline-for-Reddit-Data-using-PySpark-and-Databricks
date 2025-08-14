@@ -166,7 +166,6 @@ You can adapt the folder structure to the **medallion** model (Bronze/Silver/Gol
 
 - **Null timestamps after casting**: ensure `created_utc` is seconds (not ms) before converting; use `to_timestamp(col / 1)` or divide ms by `1000.0`.
 - **Schema drift**: explicitly define the schema in Spark to avoid column shifting when CSVs contain commas/quotes in text.
-- **SpaCy model not found**: install `en_core_web_sm` on your environment/cluster.
 - **Rate limits**: if using the live Reddit API, consider backoff/retries and respectful `limit` sizes.
 
 ---
@@ -178,6 +177,14 @@ You can adapt the folder structure to the **medallion** model (Bronze/Silver/Gol
 - Add **Delta Live Tables** or Lakeflow for automated lineage.
 - Implement **topic modeling** or **sentiment** as an additional enrichment layer.
 - Package configs (subreddit list, paths) in a `configs/` folder.
+
+---
+
+## Findings
+
+- ![Top countries visit]("Top 10 scores about countries.png")
+- ![Lowest countries visit](Lowest 10 visited countries.png)
+- ![Top scores for countries visit](Top 10 scores about countries.png)
 
 ---
 
