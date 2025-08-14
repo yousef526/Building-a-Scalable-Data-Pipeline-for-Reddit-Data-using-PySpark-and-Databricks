@@ -182,9 +182,9 @@ You can adapt the folder structure to the **medallion** model (Bronze/Silver/Gol
 
 ## Findings
 
-- ![Top countries visit]("Top 10 scores about countries.png")
-- ![Lowest countries visit](Lowest 10 visited countries.png)
-- ![Top scores for countries visit](Top 10 scores about countries.png)
+- ![Top countries visit]("Top%10%scores%about%countries.png")
+- ![Lowest countries visit](Lowest%10%visited%countries.png)
+- ![Top scores for countries visit](Top%10%scores%about%countries.png)
 
 ---
 
