@@ -183,7 +183,9 @@ You can adapt the folder structure to the **medallion** model (Bronze/Silver/Gol
 ## Findings
 
 - ![Top countries visit](https://github.com/yousef526/Building-a-Scalable-Data-Pipeline-for-Reddit-Data-using-PySpark-and-Databricks/blob/main/top_10_visited_countries.png)
+  
 - ![Lowest countries visit](https://github.com/yousef526/Building-a-Scalable-Data-Pipeline-for-Reddit-Data-using-PySpark-and-Databricks/blob/main/Lowest%2010%20visited%20countries.png)
+  
 - ![Top scores for countries visit](https://github.com/yousef526/Building-a-Scalable-Data-Pipeline-for-Reddit-Data-using-PySpark-and-Databricks/blob/main/Top%2010%20scores%20about%20countries.png)
 
 ---
