@@ -41,7 +41,7 @@ export REDDIT_CLIENT_SECRET=xxxxx
 export REDDIT_USER_AGENT="reddit-ingestion-script"
 
 # 2) Install deps
-pip install praw pandas python-dotenv
+pip install praw pandas python-dotenv geonnamecache unicode
 
 # 3) Execute
 python api_ingestion.py --subreddit travel --limit 500 --out data/raw/
@@ -61,16 +61,14 @@ Purpose: **Bronze → Silver ETL** in PySpark: load the raw dump created by `api
 What it typically covers:
 - **Load & schema:** Read raw JSON/CSV from local or DBFS, define explicit schema (types for timestamps, integers, strings).
 - **Cleansing:** handle nulls, trim whitespace, drop duplicates on post IDs, cast numerics, standardize timestamps (`created_utc` → `timestamp`).
-- **Normalization:** select/rename columns, flatten nested fields, and (optionally) explode arrays (e.g., tags).
-- **Filters & QA:** remove non‑English rows (if required), filter empty titles/bodies, simple text rules (e.g., keep alphanumeric and spaces).
+- **Normalization:** select/rename columns, flatten nested fields, and explode arrays.
 - **Outputs:** write **Delta/Parquet** to a managed “silver” path or as managed tables in Databricks for downstream analytics.
-- **Basic profiling:** quick counts, missingness ratios, top subreddits, distribution of scores/comments.
+- **Basic profiling:** quick counts, top comments in travel subreddits and which comments have highest scores.
 
 > **Run outline (Databricks):**
 1. Attach to a cluster with **Spark 3.x** and Delta.
 2. Set `raw_path` (e.g., `dbfs:/FileStore/raw/`) and `silver_path` (e.g., `dbfs:/FileStore/silver/`).
 3. Execute cells to read, clean, and write Delta tables.
-4. (Optional) Create views: `CREATE OR REPLACE TEMP VIEW posts_silver AS SELECT ...`
 
 ---
 
@@ -108,9 +106,10 @@ What it typically covers:
 
 4. **Analyze**
    - Use Spark SQL or notebooks to answer questions like:
-     - Which posts drive the most engagement per day/week?
-     - Top mentioned **locations** or **topics** in a subreddit?
-     - Trend of scores and comment counts over time.
+     - Which are most visited places according to comments?
+     - What are top 10 visited **countries** in a r/travel subreddit?
+     - What are lowest 10 visited **countries** in a r/travel subreddit?
+     - what are the highest scores in the subbreddit? .
 
 ---
 
@@ -120,16 +119,15 @@ What it typically covers:
 - **PySpark 3.x**, Delta Lake (Databricks or local Spark with delta packages)
 - **PRAW** (or another Reddit API wrapper)
 - **pandas**, **pyarrow** (for conversions), **python-dotenv** (optional)
-- **spaCy** (optional, if you perform NER), e.g.:
+- **GeonumCaches**  if you perform NER to find countries names
   ```bash
-  pip install spacy
-  python -m spacy download en_core_web_sm
+  pip install geonamescache unidecode
   ```
 
-> On **Databricks**, set up your cluster with:
+> On **Databricks**, set up cluster with:
 - A recent **runtime** supporting Spark 3.x and Delta.
 - **Environment variables** (or Databricks Secrets) for Reddit credentials.
-- A workspace path for raw/silver/gold (e.g., `dbfs:/FileStore/` prefixes).
+- A workspace path for raw/silver/gold
 
 ---
 
@@ -152,16 +150,6 @@ You can adapt the folder structure to the **medallion** model (Bronze/Silver/Gol
 
 ---
 
-## 🧪 Validation & Checks (Ideas)
-
-- Row-level counts between raw and silver.
-- Duplicate post IDs after cleaning (should be zero).
-- Timestamp sanity checks (`created_utc` in plausible ranges).
-- Language heuristics, profanity removal (if needed).
-- NER spot checks (precision/recall is usually imperfect—document caveats).
-
----
-
 ## ❓ Troubleshooting
 
 - **Null timestamps after casting**: ensure `created_utc` is seconds (not ms) before converting; use `to_timestamp(col / 1)` or divide ms by `1000.0`.
@@ -170,17 +158,7 @@ You can adapt the folder structure to the **medallion** model (Bronze/Silver/Gol
 
 ---
 
-## 🗺️ Roadmap / Next Steps
-
-- Add **unit tests** for ingestion and transform steps.
-- Add a **Databricks Job** or Workflow with schedule.
-- Add **Delta Live Tables** or Lakeflow for automated lineage.
-- Implement **topic modeling** or **sentiment** as an additional enrichment layer.
-- Package configs (subreddit list, paths) in a `configs/` folder.
-
----
-
-## Findings
+## Findings on Travel subreddit
 
 - ![Top countries visit](https://github.com/yousef526/Building-a-Scalable-Data-Pipeline-for-Reddit-Data-using-PySpark-and-Databricks/blob/main/top_10_visited_countries.png)
   
@@ -190,11 +168,6 @@ You can adapt the folder structure to the **medallion** model (Bronze/Silver/Gol
 
 ---
 
-## 📄 License
-
-This repository follows the original project’s license (if present). If not yet added, consider using MIT for simplicity.
-
----
 
 ## 🙌 Acknowledgements
 
